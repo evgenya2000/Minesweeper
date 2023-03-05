@@ -1,0 +1,14 @@
+.info-line {
+	border: 2px solid #55c5e9; /* Рамка вокруг фотографии */
+	padding: 15px; /* Расстояние от картинки до рамки */
+	background: #666; /* Цвет фона */
+	margin-right: 10px; /* Отступ справа */
+	margin-bottom: 10px; /* Отступ снизу */
+	display: inline-block;
+}
+.board {
+	display: grid;
+	grid-template-columns: repeat(16, 0fr);
+	grid-gap: 0px;
+	grid-auto-rows: minmax(0px, auto);
+}
