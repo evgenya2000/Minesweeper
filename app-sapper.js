@@ -1,16 +1,16 @@
 const Vision = {Close: '0', Open: '1', Flag: '2', Question: '3'}
 
 const Creature= {
-    Zero : '0',
-    One : '1',
-    Two: '2',
-    Three: '3',
-    Four:'4', 
-    Five: '5', 
-    Six: '6', 
-    Seven: '7', 
-    Eight: '8',
-    Bomb: '9'
+    Zero : 0,
+    One : 1,
+    Two: 2,
+    Three: 3,
+    Four: 4, 
+    Five: 5, 
+    Six: 6, 
+    Seven: 7, 
+    Eight: 8,
+    Bomb: 9
 }
 
 class Cell {
@@ -64,18 +64,16 @@ function checkCellForBomb(board, i, j) {
         return false;
     }
 
-    return board.cells[i][j] == Creature.Bomb;
+    return board.cells[i][j].entity == Creature.Bomb;
 }
 
 function initGame(x, y){
     const min = 0;
     const max = 255;
-    var x_t, y_t;
-    var i, j;
 
     var rand_pos = createRand(board.count_bomb + 1, min, max);
-
-    for(var i = 0; i < board.count_bomb+1; i++){
+    var x_t, y_t;
+    for(var i = 0; i < board.count_bomb + 1; i++){
         x_t = Math.trunc(rand_pos[i] / board.count);
         y_t = rand_pos[i] % board.count;
         board.cells[x_t][y_t].entity = Creature.Bomb;
@@ -87,8 +85,8 @@ function initGame(x, y){
         board.cells[x_t][y_t].entity = Creature.Zero;
     }
 
-    for(i = 0; i < board.count; i++){
-        for(j = 0; j < board.count; j++){
+    for(var i = 0; i < board.count; i++){
+        for(var j = 0; j < board.count; j++){
             bomb_around = 0;
             if(board.cells[i][j].entity != Creature.Bomb) {
                 if (checkCellForBomb(board, i+1, j)) {bomb_around++};
@@ -106,9 +104,7 @@ function initGame(x, y){
 }
 
 function clickCellLeft(x, y){
-    let parent = document.querySelector('.board');
-    let child_list;
-    child_list = document.querySelectorAll(`[x="${x}"]`);
+    var child_list = document.querySelectorAll(`[x="${x}"]`);
 
     if (board.start){
         initGame(x, y);
@@ -143,7 +139,7 @@ function clickCellLeft(x, y){
                 child_list[y].setAttribute('src', 'resources/sprite-b-eight.jpg');
                 break;
         }
-    }else{
+    } else {
         board.cells[x][y].visuality = Vision.Open;
         switch(board.cells[x][y].entity){
             case Creature.Zero:
@@ -174,11 +170,10 @@ function clickCellLeft(x, y){
                 child_list[y].setAttribute('src', 'resources/sprite-b-eight.jpg');
                 break;
             case Creature.Bomb:
-                child_list[y].setAttribute('src', 'resources/sprite-b-bomp-op.jpg');
+                child_list[y].setAttribute('src', 'resources/sprite-bomb-op.jpg');
                 break;
         }
     }
-    
     
 }
 
