@@ -61,8 +61,12 @@ function createRand(randLength, min, max){
     return randArray;
 }
 
+function isOnBoard(board, i, j) { 
+    return !(i < 0 || j < 0 || i > board.count-1 || j > board.count-1);
+}
+
 function checkCellForBomb(board, i, j) {
-    if (i < 0 || j < 0 || i >= board.count || j >= board.count) {
+    if (!isOnBoard(board, i, j)) {
         return false;
     }
 
@@ -150,6 +154,26 @@ function openBoard(){
 function endGame(){
     openBoard();
     board.proc = Process.End;
+    document.querySelector('.minesweeper-play-btn').setAttribute('src', 'resources/sprite-sadness.jpg');
+}
+
+function openNearZero(x, y) {
+    if (!isOnBoard(board, x, y)) {
+        return;
+    }
+    
+    clickCellLeft(x, y);
+}
+
+function openZero(x, y) {
+    openNearZero(x-1, y-1);
+    openNearZero(x-1, y);
+    openNearZero(x-1, y+1);
+    openNearZero(x, y-1);
+    openNearZero(x, y+1);
+    openNearZero(x + 1, y - 1);
+    openNearZero(x + 1, y);
+    openNearZero(x + 1, y + 1);
 }
 
 function clickCellLeft(x, y){
@@ -164,6 +188,7 @@ function clickCellLeft(x, y){
         switch(board.cells[x][y].entity){
             case Creature.Zero:
                 child_list[y].setAttribute('src', 'resources/sprite-opened.jpg');
+                openZero(x, y);
                 break;
             case Creature.One:
                 child_list[y].setAttribute('src', 'resources/sprite-b-one.jpg');
@@ -257,7 +282,8 @@ function newGame(){
     board = new Board();
     delOldBoard(board.count);
     drawStartBoard(board.count);
-}
+    document.querySelector('.minesweeper-play-btn').setAttribute('src', 'resources/sprite-smile.jpg');
+} 
 
 drawStartBoard(board.count);
 
