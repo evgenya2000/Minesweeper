@@ -13,6 +13,8 @@ const Creature= {
     Bomb: 9
 }
 
+const Process = {Start: 0, Game: 1, End: 2}
+
 class Cell {
     constructor(){
         this.visuality = Vision.Close;
@@ -23,7 +25,7 @@ class Cell {
 class Board {
     constructor(){
         this.count = 16;
-        this.start = true;
+        this.proc = Process.Start;
         this.count_bomb = 40;
         this.cells = [];
         for (var i = 0; i < this.count; i++) {
@@ -103,44 +105,62 @@ function initGame(x, y){
     }
 }
 
-function clickCellLeft(x, y){
-    var child_list = document.querySelectorAll(`[x="${x}"]`);
-
-    if (board.start){
-        initGame(x, y);
-        board.start = false;
-        board.cells[x][y].visuality = Vision.Open;
-        switch(board.cells[x][y].entity){
-            case Creature.Zero:
-                child_list[y].setAttribute('src', 'resources/sprite-opened.jpg');
-                break;
-            case Creature.One:
-                child_list[y].setAttribute('src', 'resources/sprite-b-one.jpg');
-                break;
-            case Creature.Two:
-                child_list[y].setAttribute('src', 'resources/sprite-b-two.jpg');
-                break;
-            case Creature.Three:
-                child_list[y].setAttribute('src', 'resources/sprite-b-three.jpg');
-                break;
-            case Creature.Four:
-                child_list[y].setAttribute('src', 'resources/sprite-b-four.jpg');
-                break;
-            case Creature.Five:
-                child_list[y].setAttribute('src', 'resources/sprite-b-five.jpg');
-                break;
-            case Creature.Six:
-                child_list[y].setAttribute('src', 'resources/sprite-b-six.jpg');
-                break;
-            case Creature.Seven:
-                child_list[y].setAttribute('src', 'resources/sprite-b-seven.jpg');
-                break;
-            case Creature.Eight:
-                child_list[y].setAttribute('src', 'resources/sprite-b-eight.jpg');
-                break;
+function openBoard(){
+    for (var i = 0; i < board.count; i++){
+        var child_list = document.querySelectorAll(`[x="${i}"]`);
+        for(var j = 0; j < board.count; j++){
+            if (board.cells[i][j].visuality != Vision.Open){
+                switch(board.cells[i][j].entity){
+                    case Creature.Zero:
+                        child_list[j].setAttribute('src', 'resources/sprite-opened.jpg');
+                        break;
+                    case Creature.One:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-one.jpg');
+                        break;
+                    case Creature.Two:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-two.jpg');
+                        break;
+                    case Creature.Three:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-three.jpg');
+                        break;
+                    case Creature.Four:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-four.jpg');
+                        break;
+                    case Creature.Five:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-five.jpg');
+                        break;
+                    case Creature.Six:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-six.jpg');
+                        break;
+                    case Creature.Seven:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-seven.jpg');
+                        break;
+                    case Creature.Eight:
+                        child_list[j].setAttribute('src', 'resources/sprite-b-eight.jpg');
+                        break;
+                    case Creature.Bomb:
+                        child_list[j].setAttribute('src', 'resources/sprite-bomb-op.jpg');
+                        break;
+                }
+            }
         }
-    } else {
+    }
+}
+
+function endGame(){
+    openBoard();
+    board.proc = Process.End;
+}
+
+function clickCellLeft(x, y){
+    if (board.proc == Process.Start){
+        initGame(x, y);
+        board.proc = Process.Game;
+    }
+
+    if (board.cells[x][y].visuality != Vision.Open && board.proc != Process.End){
         board.cells[x][y].visuality = Vision.Open;
+        var child_list = document.querySelectorAll(`[x="${x}"]`);
         switch(board.cells[x][y].entity){
             case Creature.Zero:
                 child_list[y].setAttribute('src', 'resources/sprite-opened.jpg');
@@ -170,19 +190,35 @@ function clickCellLeft(x, y){
                 child_list[y].setAttribute('src', 'resources/sprite-b-eight.jpg');
                 break;
             case Creature.Bomb:
-                child_list[y].setAttribute('src', 'resources/sprite-bomb-op.jpg');
+                child_list[y].setAttribute('src', 'resources/sprite-bomb-explosion.jpg');
+                endGame();
+                break;
+        }
+    }
+}
+
+function clickCellRight(x,y){
+    if (board.proc != Process.End){
+        let child_list;
+        switch(board.cells[x][y].visuality){
+            case Vision.Close:
+                board.cells[x][y].visuality = Vision.Flag;
+                child_list = document.querySelectorAll(`[x="${x}"]`);
+                child_list[y].setAttribute('src', 'resources/sprite-flag.jpg');
+                break;
+            case Vision.Flag:
+                board.cells[x][y].visuality = Vision.Question;
+                child_list = document.querySelectorAll(`[x="${x}"]`);
+                child_list[y].setAttribute('src', 'resources/sprite-question.jpg');
+                break;
+            case Vision.Question:
+                board.cells[x][y].visuality = Vision.Close;
+                child_list = document.querySelectorAll(`[x="${x}"]`);
+                child_list[y].setAttribute('src', 'resources/sprite-closed.jpg');
                 break;
         }
     }
     
-}
-
-function clickCellRight(x,y){
-    let parent = document.querySelector('.board');
-    let child_list;
-    child_list = document.querySelectorAll(`[x="${x}"]`);
-    child_list[y].setAttribute('src', 'resources/sprite-question.jpg');
-
     return false;
 }
 
