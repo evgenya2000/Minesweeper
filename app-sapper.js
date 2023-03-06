@@ -222,17 +222,65 @@ function clickCellLeft(x, y){
     }
 }
 
+function drawNumber(num, S){
+    switch (num){
+        case 0:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-zero.jpg');
+            break;
+        case 1:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-one.jpg');
+            break;
+        case 2:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-two.jpg');
+            break;
+        case 3:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-three.jpg');
+            break;
+        case 4:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-four.jpg');
+            break;
+        case 5:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-five.jpg');
+            break;
+        case 6:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-six.jpg');
+            break;
+        case 7:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-seven.jpg');
+            break;
+        case 8:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-eight.jpg');
+            break;
+        case 9:
+            document.getElementById(S).setAttribute('src', 'resources/sprite-nine.jpg');
+            break;
+    }
+}
+
+function drawCountBomb(){
+    var S0 = Math.trunc(board.count_bomb / 100);
+    var S1 = Math.trunc(board.count_bomb / 10) % 10;
+    var S2 = board.count_bomb % 10;
+    drawNumber(S0, 'S0');
+    drawNumber(S1, 'S1');
+    drawNumber(S2, 'S2');
+}
+
 function clickCellRight(x,y){
     if (board.proc != Process.End){
         let child_list;
-        switch(board.cells[x][y].visuality){
+        switch (board.cells[x][y].visuality){
             case Vision.Close:
                 board.cells[x][y].visuality = Vision.Flag;
+                board.count_bomb--;
+                drawCountBomb();
                 child_list = document.querySelectorAll(`[x="${x}"]`);
                 child_list[y].setAttribute('src', 'resources/sprite-flag.jpg');
                 break;
             case Vision.Flag:
                 board.cells[x][y].visuality = Vision.Question;
+                board.count_bomb++;
+                drawCountBomb();
                 child_list = document.querySelectorAll(`[x="${x}"]`);
                 child_list[y].setAttribute('src', 'resources/sprite-question.jpg');
                 break;
@@ -282,8 +330,9 @@ function newGame(){
     board = new Board();
     delOldBoard(board.count);
     drawStartBoard(board.count);
+    drawCountBomb();
     document.querySelector('.minesweeper-play-btn').setAttribute('src', 'resources/sprite-smile.jpg');
 } 
 
 drawStartBoard(board.count);
-
+drawCountBomb();
