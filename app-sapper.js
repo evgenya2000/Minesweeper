@@ -183,6 +183,10 @@ function clickCellLeft(x, y){
     }
 
     if (board.cells[x][y].visuality != Vision.Open && board.proc != Process.End){
+        if (board.cells[x][y].visuality == Vision.Flag){
+            board.count_bomb++;
+            drawCountBomb();
+        }
         board.cells[x][y].visuality = Vision.Open;
         var child_list = document.querySelectorAll(`[x="${x}"]`);
         switch(board.cells[x][y].entity){
