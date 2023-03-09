@@ -27,6 +27,7 @@ class Board {
         this.count = 16;
         this.proc = Process.Start;
         this.count_bomb = 40;
+        this.count_close = 256 - this.count_bomb;
         this.cells = [];
         for (var i = 0; i < this.count; i++) {
             this.cells[i] = [];
@@ -114,37 +115,43 @@ function openBoard(){
         var child_list = document.querySelectorAll(`[x="${i}"]`);
         for(var j = 0; j < board.count; j++){
             if (board.cells[i][j].visuality != Vision.Open){
-                switch(board.cells[i][j].entity){
-                    case Creature.Zero:
-                        child_list[j].setAttribute('src', 'resources/sprite-opened.jpg');
-                        break;
-                    case Creature.One:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-one.jpg');
-                        break;
-                    case Creature.Two:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-two.jpg');
-                        break;
-                    case Creature.Three:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-three.jpg');
-                        break;
-                    case Creature.Four:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-four.jpg');
-                        break;
-                    case Creature.Five:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-five.jpg');
-                        break;
-                    case Creature.Six:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-six.jpg');
-                        break;
-                    case Creature.Seven:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-seven.jpg');
-                        break;
-                    case Creature.Eight:
-                        child_list[j].setAttribute('src', 'resources/sprite-b-eight.jpg');
-                        break;
-                    case Creature.Bomb:
-                        child_list[j].setAttribute('src', 'resources/sprite-bomb-op.jpg');
-                        break;
+                if (board.cells[i][j].visuality == Vision.Flag){
+                    if (board.cells[i][j].entity != Creature.Bomb){
+                        child_list[j].setAttribute('src', 'resources/sprite-not-bomb.jpg');
+                    }
+                }else{
+                    switch(board.cells[i][j].entity){
+                        case Creature.Zero:
+                            child_list[j].setAttribute('src', 'resources/sprite-opened.jpg');
+                            break;
+                        case Creature.One:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-one.jpg');
+                            break;
+                        case Creature.Two:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-two.jpg');
+                            break;
+                        case Creature.Three:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-three.jpg');
+                            break;
+                        case Creature.Four:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-four.jpg');
+                            break;
+                        case Creature.Five:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-five.jpg');
+                            break;
+                        case Creature.Six:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-six.jpg');
+                            break;
+                        case Creature.Seven:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-seven.jpg');
+                            break;
+                        case Creature.Eight:
+                            child_list[j].setAttribute('src', 'resources/sprite-b-eight.jpg');
+                            break;
+                        case Creature.Bomb:
+                            child_list[j].setAttribute('src', 'resources/sprite-bomb-op.jpg');
+                            break;
+                    }
                 }
             }
         }
@@ -193,37 +200,51 @@ function clickCellLeft(x, y){
             case Creature.Zero:
                 child_list[y].setAttribute('src', 'resources/sprite-opened.jpg');
                 openZero(x, y);
+                board.count_close--;
                 break;
             case Creature.One:
                 child_list[y].setAttribute('src', 'resources/sprite-b-one.jpg');
+                board.count_close--;
                 break;
             case Creature.Two:
                 child_list[y].setAttribute('src', 'resources/sprite-b-two.jpg');
+                board.count_close--;
                 break;
             case Creature.Three:
                 child_list[y].setAttribute('src', 'resources/sprite-b-three.jpg');
+                board.count_close--;
                 break;
             case Creature.Four:
                 child_list[y].setAttribute('src', 'resources/sprite-b-four.jpg');
+                board.count_close--;
                 break;
             case Creature.Five:
                 child_list[y].setAttribute('src', 'resources/sprite-b-five.jpg');
+                board.count_close--;
                 break;
             case Creature.Six:
                 child_list[y].setAttribute('src', 'resources/sprite-b-six.jpg');
+                board.count_close--;
                 break;
             case Creature.Seven:
                 child_list[y].setAttribute('src', 'resources/sprite-b-seven.jpg');
+                board.count_close--;
                 break;
             case Creature.Eight:
                 child_list[y].setAttribute('src', 'resources/sprite-b-eight.jpg');
+                board.count_close--;
                 break;
             case Creature.Bomb:
                 child_list[y].setAttribute('src', 'resources/sprite-bomb-explosion.jpg');
                 endGame();
                 break;
         }
+        if (board.count_close == 0){
+            board.proc = Process.End;
+            document.querySelector('.minesweeper-play-btn').setAttribute('src', 'resources/sprite-cool.jpg');
+        }
     }
+    
 }
 
 function drawNumber(num, S){
